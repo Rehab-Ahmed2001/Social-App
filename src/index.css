@@ -1,6 +1,20 @@
+@import url('https://fonts.googleapis.com/css2?family=Playwrite+PL:wght@100..400&family=Rubik:ital,wght@0,300..900;1,300..900&display=swap');
+
 @import "tailwindcss";
 
+@plugin "flowbite-react/plugin/tailwindcss";
+
+@source "../.flowbite-react/class-list.json";
+
+@theme {
+    --font-logo: "Playwrite PL", sans-serif;
+    --font-primary: "Rubik", sans-serif;
+}
+
 @layer base {
+    body {
+        @apply font-primary;
+    }
 
     h1,
     h2,
@@ -38,6 +52,6 @@
 
 @layer utilities {
     .container {
-        @apply mx-auto px-4 sm:px-6 lg:px-8
+        @apply mx-auto px-4 sm:px-6 lg:px-8;
     }
 }
