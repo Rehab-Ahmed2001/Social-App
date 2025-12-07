@@ -1,37 +1,90 @@
-import React from 'react'
-import { Button, Checkbox, Label, TextInput } from "flowbite-react";
+import React, { useState } from 'react'
+import axios from "axios";
+import { Alert, Button, Label, TextInput } from "flowbite-react";
+import { useForm } from 'react-hook-form';
+import { useNavigate } from "react-router-dom"
+import * as z from "zod"
+import { zodResolver } from '@hookform/resolvers/zod';
+import ValidationError from '../../../components/shared/ValidationError/ValidationError';
+import AppButton from '../../../components/shared/AppButton/AppButton';
+import { HiInformationCircle } from 'react-icons/hi';
+const defaultValues = {
+  email: "",
+  password: "",
+}
+const schema = z.object({
+  email: z.email({ message: "Invalid email format" }),
+  password: z.string()
+    .regex(/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[#?!@$%^&*-]).{8,}$/,
+      { message: "Password must be at least 8 characters and include uppercase, lowercase, number, and special character" }),
+})
 export default function Login() {
 
+  const navigate = useNavigate()
+  const [apiError, setApiError] = useState(null)
+  const { register, handleSubmit, formState: { errors, isSubmitting, isValid } } = useForm({ defaultValues, resolver: zodResolver(schema) });
 
+  async function onSubmit(data) {
+    console.log(data)
 
-
+    try {
+      const { data: response } = await axios.post("https://linked-posts.routemisr.com/users/signin", data)
+      if (response.message === "success") {
+        setApiError(null)
+        localStorage.getItem("token", response.token)
+        navigate("/");
+      }
+      else if (response.error) {
+        throw new Error(response.error)
+      }
+    } catch (error) {
+      console.log(error);
+      setApiError(error.response.data.error)
+    }
+  }
 
   return (
     <section className='py-12'>
       <div className='container'>
         <div className='max-w-lg mx-auto p-8 shadow-lg dark:bg-gray-800 rounded'>
           <h1 className='text-center'>Login</h1>
-          <form className="flex max-w-md flex-col gap-4">
+          {/* API Error */}
+          {apiError && (
+            <Alert className='my-4' color="failure" icon={HiInformationCircle}>
+              {apiError}
+            </Alert>
+          )}
+          <form onSubmit={handleSubmit(onSubmit)} className="flex max-w-md flex-col gap-4">
+
+            {/* email */}
             <div>
               <div className="mb-2 block">
-                <Label htmlFor="email1">Your email</Label>
+                <Label htmlFor="email">Your email</Label>
               </div>
-              <TextInput id="email1" type="email" placeholder="Rehab@gmail.com" required />
+              <TextInput id="email" type="email" placeholder="rehab@gmail.com" {...register("email")} />
+              <ValidationError error={errors.email?.message} />
             </div>
+
+            {/* Password */}
             <div>
               <div className="mb-2 block">
-                <Label htmlFor="password1">Your password</Label>
+                <Label htmlFor="password">Your Password</Label>
               </div>
-              <TextInput id="password1" type="password"placeholder="**********" required />
+              <TextInput id="password" type="password" placeholder="*******" {...register("password")} />
+              <ValidationError error={errors.password?.message} />
             </div>
-            <div className="flex items-center gap-2">
-              <Checkbox id="remember" />
-              <Label htmlFor="remember">Remember me</Label>
-            </div>
-            <Button type="submit">Submit</Button>
+
+
+            <AppButton
+              isloading={isSubmitting}
+              disabled={!isValid}
+            >
+              Login
+            </AppButton>
           </form>
+
         </div>
       </div>
-    </section >
+    </section>
   )
 }

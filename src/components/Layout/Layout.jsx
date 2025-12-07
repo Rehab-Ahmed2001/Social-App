@@ -1,7 +1,7 @@
 import React from "react";
-import AppNavbar from "../Navbar/Navbar";
-import AppFooter from "../Footer/Footer";
 import { Outlet } from "react-router-dom";
+import AppFooter from "./Footer/Footer";
+import AppNavbar from "./Navbar/Navbar";
 
 export default function Layout() {
   return (
