@@ -1,13 +1,14 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import axios from "axios";
 import { Alert, Button, Label, TextInput } from "flowbite-react";
 import { useForm } from 'react-hook-form';
-import { useNavigate } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import * as z from "zod"
 import { zodResolver } from '@hookform/resolvers/zod';
 import ValidationError from '../../../components/shared/ValidationError/ValidationError';
 import AppButton from '../../../components/shared/AppButton/AppButton';
 import { HiInformationCircle } from 'react-icons/hi';
+import { AuthContext } from '../../../Context/AuthContext';
 const defaultValues = {
   email: "",
   password: "",
@@ -24,6 +25,7 @@ export default function Login() {
   const [apiError, setApiError] = useState(null)
   const { register, handleSubmit, formState: { errors, isSubmitting, isValid } } = useForm({ defaultValues, resolver: zodResolver(schema) });
 
+  const { setToken } = useContext(AuthContext)
   async function onSubmit(data) {
     console.log(data)
 
@@ -31,7 +33,8 @@ export default function Login() {
       const { data: response } = await axios.post("https://linked-posts.routemisr.com/users/signin", data)
       if (response.message === "success") {
         setApiError(null)
-        localStorage.getItem("token", response.token)
+        localStorage.setItem("token", response.token)
+        setToken(response.token);
         navigate("/");
       }
       else if (response.error) {
@@ -81,6 +84,13 @@ export default function Login() {
             >
               Login
             </AppButton>
+            {/* Link to Register */}
+            <p className="mt-4 text-center text-sm text-gray-600 dark:text-gray-400">
+              Don't have an account?{' '}
+              <Link to="/register" className="text-blue-600 hover:underline">
+                Register here
+              </Link>
+            </p>
           </form>
 
         </div>

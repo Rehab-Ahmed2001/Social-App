@@ -7,6 +7,8 @@ import NotFound from "../pages/NotFound/NotFound";
 import Profile from "../pages/Profile/Profile";
 import Friends from "../pages/Friends/Friends";
 import Chats from "../pages/Chats/Chats";
+import ProtectedRoutes from "./ProtectedRoutes";
+import ProtectedAuthRoutes from "./ProtectedAuthRoutes";
 
 
 export const router = createBrowserRouter([
@@ -16,27 +18,27 @@ export const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <Posts />
+        element: <ProtectedRoutes><Posts /></ProtectedRoutes>
       },
       {
         path: "/login",
-        element: <Login />
+        element: <ProtectedAuthRoutes><Login /></ProtectedAuthRoutes>
       },
       {
         path: "/register",
-        element: <Register />
+        element: <ProtectedAuthRoutes><Register /></ProtectedAuthRoutes>
       },
       {
         path: "/profile",
-        element: <Profile />
+        element: <ProtectedRoutes><Profile /></ProtectedRoutes>
       },
       {
         path: "/friends",
-        element: <Friends />
+        element: <ProtectedRoutes><Friends /></ProtectedRoutes>
       },
       {
         path: "/chats",
-        element: <Chats />
+        element: <ProtectedRoutes><Chats /></ProtectedRoutes>
       },
       {
         path: "*",
