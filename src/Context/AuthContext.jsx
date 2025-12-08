@@ -24,6 +24,8 @@ export default function AuthContextProvider({ children }) {
 
         if (token) {
             getProfileData(token)
+        } else {
+            setUserData(null)
         }
 
     }, [token]);

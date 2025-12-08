@@ -76,7 +76,18 @@ export default function Login() {
               <TextInput id="password" type="password" placeholder="*******" {...register("password")} />
               <ValidationError error={errors.password?.message} />
             </div>
-
+            {/* Remember me */}
+            <div className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                id="remember"
+                {...register("remember")}
+                className="w-4 h-4"
+              />
+              <label htmlFor="remember" className="text-sm text-gray-700 dark:text-gray-300">
+                Remember me
+              </label>
+            </div>
 
             <AppButton
               isloading={isSubmitting}
