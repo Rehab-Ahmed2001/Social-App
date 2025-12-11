@@ -1,15 +1,55 @@
-import React from 'react'
+import React, { useRef } from 'react'
 import { Button, Card, Label, Textarea } from "flowbite-react";
-
+import { useForm } from "react-hook-form"
 import { IoMdCloudUpload } from "react-icons/io";
+import axios from 'axios';
+import AppButton from '../shared/AppButton/AppButton';
+import * as z from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+const schema = z.object({
+    body: z
+        .string()
+        .min(1, "Post content is required")
+        .max(500, "Max length is 500 characters"),
+});
 
 export default function Add() {
+    const fileInputRef = useRef()
+    const { register, handleSubmit, reset, formState: { errors, isSubmitting, isValid } } = useForm({
+        resolver: zodResolver(schema),
+        mode: "onChange"
+    })
+    async function addPost(data) {
+        console.log(data.body, fileInputRef.current.files[0]);
+        const formData = new FormData()
+        formData.append("body", data.body)
+        formData.append("image", fileInputRef.current.files[0])
+
+        try {
+            const { data: message } = await axios.post(`${import.meta.env.VITE_BASE_URL}/posts`,
+                formData, {
+                headers: {
+                    token: localStorage.getItem("token")
+                }
+            })
+            if (message === "success") {
+                reset()
+                fileInputRef.current.value = null;
+            } else if (message.error) {
+                throw new Error("Something went wrong")
+            }
+        } catch (error) {
+            console.log(error);
+
+        }
+    }
     return (
         <section className='py-6'>
             <div className='max-w-3xl mx-auto'>
 
                 <Card className="">
-                    <form className="flex flex-col gap-4">
+                    <form onSubmit={handleSubmit(addPost)}
+                        className="flex flex-col gap-4">
                         <div>
                             <div className="mb-2 block">
                                 <Label htmlFor="comment">Post something</Label>
@@ -17,14 +57,30 @@ export default function Add() {
                         </div>
                         <div className='flex items-center gap-4'>
                             <Textarea
+                                {...register("body")}
                                 id="comment"
                                 placeholder="Leave a comment..."
-                                required
                                 rows={2} />
-                            <IoMdCloudUpload className='text-4xl cursor-pointer' />
-                        </div>
+                            <input
+                                {...register("image")}
+                                className='hidden'
+                                ref={fileInputRef}
+                                type='file'
+                            />
 
-                        <Button type="submit">Create post</Button>
+
+                            <IoMdCloudUpload onClick={() => fileInputRef.current.click()} className='text-4xl cursor-pointer' />
+                        </div>
+                        {errors.body && (
+                            <p className="text-red-500 text-sm">{errors.body.message}</p>
+                        )}
+
+                        <AppButton
+                            isloading={isSubmitting}
+                            disabled={!isValid}
+                        >
+                            Create post
+                        </AppButton>
                     </form>
                 </Card>
 

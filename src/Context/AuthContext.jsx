@@ -31,7 +31,7 @@ export default function AuthContextProvider({ children }) {
     }, [token]);
     async function getProfileData(token) {
         try {
-            const { data } = await axios.get("https://linked-posts.routemisr.com/users/profile-data", {
+            const { data } = await axios.get(`${import.meta.env.VITE_BASE_URL}/users/profile-data`, {
                 headers: {
                     token
                 },

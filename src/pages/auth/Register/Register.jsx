@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import axios from "axios";
-import { Radio, Label, TextInput, Alert } from "flowbite-react";
-import { useForm } from 'react-hook-form';
+import { Radio, Label, TextInput, Alert, Datepicker } from "flowbite-react";
+import { Controller, useForm } from 'react-hook-form';
 import { Link, useNavigate } from "react-router-dom"
 import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
@@ -37,7 +37,7 @@ const schema = z.object({
     }, { message: "Invalid date of birth" })
   ,
   gender: z
-    .enum(["male", "female"], { message: "Please select a gander" })
+    .enum(["male", "female"], { message: "Please select a gender" })
 }).refine((data) => data.password === data.rePassword, {
   message: "Passwords do not match",
   path: ["rePassword"],
@@ -49,13 +49,13 @@ export default function Register() {
 
 
 
-  const { register, handleSubmit, formState: { errors, isSubmitting, isValid } } = useForm({ defaultValues, resolver: zodResolver(schema) });
+  const { register, handleSubmit, formState: { errors, isSubmitting, isValid }, control } = useForm({ defaultValues, resolver: zodResolver(schema) });
 
   async function onSubmit(data) {
     console.log(data)
 
     try {
-      const { data: response } = await axios.post("https://linked-posts.routemisr.com/users/signup", data)
+      const { data: response } = await axios.post(`${import.meta.env.VITE_BASE_URL}/users/signup`, data)
       if (response.message === "success") {
         navigate("/login");
         setApiError(null)
@@ -119,7 +119,24 @@ export default function Register() {
             {/* Date of Birth */}
             <div>
               <Label htmlFor="dateOfBirth" className="mb-1 block">Date of Birth</Label>
-              <TextInput id="dateOfBirth" type="date" {...register("dateOfBirth")} />
+              <Controller
+                render={({ field }) =>
+                  <Datepicker {...field}
+                    value={field.value ? new Date(field.value) : new Date()}
+                    onChange={(date) => {
+                      if (date) {
+                        const formatetedDate = new Date(date).toLocaleDateString("en-US", {
+                          day: "2-digit",
+                          month: "2-digit",
+                          year: "numeric"
+                        })
+                        return field.onChange(formatetedDate)
+                      }
+                    }} />}
+                name="dateOfBirth"
+                control={control} />
+
+              {/* <TextInput id="dateOfBirth" type="date" {...register("dateOfBirth")} /> */}
               <ValidationError error={errors.dateOfBirth?.message} />
             </div>
 
@@ -138,7 +155,7 @@ export default function Register() {
               </div>
               <ValidationError error={errors.gender?.message} />
             </div>
-           
+
             {/* Button */}
             <AppButton
               isloading={isSubmitting}

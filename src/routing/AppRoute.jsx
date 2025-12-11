@@ -9,6 +9,7 @@ import Friends from "../pages/Friends/Friends";
 import Chats from "../pages/Chats/Chats";
 import ProtectedRoutes from "./ProtectedRoutes";
 import ProtectedAuthRoutes from "./ProtectedAuthRoutes";
+import PostDetails from "../pages/PostDetails/PostDetails";
 
 
 export const router = createBrowserRouter([
@@ -19,6 +20,10 @@ export const router = createBrowserRouter([
       {
         index: true,
         element: <ProtectedRoutes><Posts /></ProtectedRoutes>
+      },
+      {
+        path: "/posts/:id",
+        element: <ProtectedRoutes><PostDetails /></ProtectedRoutes>
       },
       {
         path: "/login",

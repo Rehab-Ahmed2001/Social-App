@@ -6,7 +6,7 @@ export default function PostsList() {
     const [posts, setPosts] = useState(null)
     async function getPosts() {
         try {
-            const { data: { posts } } = await axios.get("https://linked-posts.routemisr.com/posts", {
+            const { data: { posts } } = await axios.get(`${import.meta.env.VITE_BASE_URL}/posts`, {
                 headers: { token: localStorage.getItem("token") }
             })
             setPosts(posts)
@@ -19,12 +19,17 @@ export default function PostsList() {
     }
     useEffect(() => {
         getPosts()
-    }, [])
+    }, []);
     return (
         <section className='py-12'>
             <div className='max-w-3xl mx-auto'>
                 <div className='flex flex-col gap-6'>
-                    {posts && posts.map((post) => <PostItem key={post._id} post={post} />)}
+                    {posts && posts.map((post) => <PostItem
+                        key={post._id}
+                        post={post}
+                        
+                    />)
+                    }
                 </div>
             </div>
         </section>

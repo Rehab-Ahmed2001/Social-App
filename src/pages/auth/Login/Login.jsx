@@ -30,7 +30,7 @@ export default function Login() {
     console.log(data)
 
     try {
-      const { data: response } = await axios.post("https://linked-posts.routemisr.com/users/signin", data)
+      const { data: response } = await axios.post(`${import.meta.env.VITE_BASE_URL}/users/signin`, data)
       if (response.message === "success") {
         setApiError(null)
         localStorage.setItem("token", response.token)
