@@ -11,7 +11,12 @@ export default function PostItem({ post, showAllComments = false }) {
     return (
         <Card>
             {/* header */}
-            <HeaderPostAndComment user={{ ...user, createdAt, body }} />
+            <HeaderPostAndComment
+                user={user}
+                createdAt={createdAt}
+                body={body}
+            />
+
             {/* contant */}
             <img src={image} alt={body} />
 
@@ -31,31 +36,26 @@ export default function PostItem({ post, showAllComments = false }) {
 
             </footer>
             {/* comments */}
-            {comments && comments.length > 0 ? (
+            {comments && comments.length > 0 && (
                 showAllComments ? (
                     comments.map((comment) => (
                         <HeaderPostAndComment
                             key={comment._id}
-                            user={{
-                                ...comment.commentCreator,
-                                createdAt: comment.createdAt,
-                                body: comment.content
-                            }}
+                            user={comment.commentCreator}
+                            createdAt={comment.createdAt}
+                            body={comment.content}
                             isComment={true}
                         />
                     ))
                 ) : (
                     <HeaderPostAndComment
-                        user={{
-                            ...comments[0].commentCreator,
-                            createdAt: comments[0].createdAt,
-                            body: comments[0].content
-                        }}
+                        user={comments[0].commentCreator}
+                        createdAt={comments[0].createdAt}
+                        body={comments[0].content}
                         isComment={true}
                     />
                 )
-            ) : null}
-
-        </Card >
+            )}
+            </Card >
     )
 }
