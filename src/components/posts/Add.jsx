@@ -6,6 +6,7 @@ import axios from 'axios';
 import AppButton from '../shared/AppButton/AppButton';
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { toast } from 'react-toastify';
 const schema = z.object({
     body: z
         .string()
@@ -23,24 +24,37 @@ export default function Add() {
         console.log(data.body, fileInputRef.current.files[0]);
         const formData = new FormData()
         formData.append("body", data.body)
-        formData.append("image", fileInputRef.current.files[0])
+        if (fileInputRef.current.files[0]) {
+            formData.append("image", fileInputRef.current.files[0])
+        }
 
         try {
-            const { data: message } = await axios.post(`${import.meta.env.VITE_BASE_URL}/posts`,
+            const { data } = await axios.post(`${import.meta.env.VITE_BASE_URL}/posts`,
                 formData, {
                 headers: {
                     token: localStorage.getItem("token")
                 }
             })
-            if (message === "success") {
+            if (data.message === "success") {
                 reset()
-                fileInputRef.current.value = null;
-            } else if (message.error) {
+                toast.success("Post created successfully", {
+
+                    position: "top-center",
+                    theme: "dark",
+
+                })
+            } else if (data.error) {
                 throw new Error("Something went wrong")
+
             }
         } catch (error) {
             console.log(error);
+            toast.error("Post creation failed", {
 
+                position: "top-center",
+                theme: "dark",
+
+            })
         }
     }
     return (
@@ -58,6 +72,7 @@ export default function Add() {
                         <div className='flex items-center gap-4'>
                             <Textarea
                                 {...register("body")}
+                                name='body'
                                 id="comment"
                                 placeholder="Leave a comment..."
                                 rows={2} />
