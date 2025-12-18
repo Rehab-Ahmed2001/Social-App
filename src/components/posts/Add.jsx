@@ -7,6 +7,7 @@ import AppButton from '../shared/AppButton/AppButton';
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from 'react-toastify';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 const schema = z.object({
     body: z
         .string()
@@ -16,6 +17,31 @@ const schema = z.object({
 
 export default function Add() {
     const fileInputRef = useRef()
+    const queryClient = useQueryClient()
+    const { mutate } = useMutation({
+        mutationFn: addPost,
+        onSuccess: () => {
+            reset()
+            toast.success("Post created successfully", {
+
+                position: "top-center",
+                theme: "dark",
+
+            })
+            queryClient.invalidateQueries(["profile-posts"]);
+            queryClient.invalidateQueries(["all-posts"]);
+        },
+        onError: (error) => {
+            console.log(error);
+            toast.error("Post creation failed", {
+
+                position: "top-center",
+                theme: "dark",
+
+            })
+        }
+    })
+
     const { register, handleSubmit, reset, formState: { errors, isSubmitting, isValid } } = useForm({
         resolver: zodResolver(schema),
         mode: "onChange"
@@ -28,41 +54,21 @@ export default function Add() {
             formData.append("image", fileInputRef.current.files[0])
         }
 
-        try {
-            const { data } = await axios.post(`${import.meta.env.VITE_BASE_URL}/posts`,
-                formData, {
-                headers: {
-                    token: localStorage.getItem("token")
-                }
-            })
-            if (data.message === "success") {
-                reset()
-                toast.success("Post created successfully", {
 
-                    position: "top-center",
-                    theme: "dark",
-
-                })
-            } else if (data.error) {
-                throw new Error("Something went wrong")
-
+        return await axios.post(`${import.meta.env.VITE_BASE_URL}/posts`,
+            formData, {
+            headers: {
+                token: localStorage.getItem("token")
             }
-        } catch (error) {
-            console.log(error);
-            toast.error("Post creation failed", {
+        })
 
-                position: "top-center",
-                theme: "dark",
-
-            })
-        }
     }
     return (
         <section className='py-6'>
             <div className='max-w-3xl mx-auto'>
 
                 <Card className="">
-                    <form onSubmit={handleSubmit(addPost)}
+                    <form onSubmit={handleSubmit(mutate)}
                         className="flex flex-col gap-4">
                         <div>
                             <div className="mb-2 block">

@@ -1,24 +1,14 @@
-import axios from 'axios'
 import { useParams } from 'react-router-dom'
 import PostItem from '../../components/posts/PostItem';
-import { useQuery } from '@tanstack/react-query';
+import useFetch from '../../hooks/useFetch.js';
+import { AuthContext } from '../../Context/AuthContext.jsx';
+import { useContext } from 'react';
 
 export default function PostDetails() {
     const { id } = useParams();
     console.log(id);
-
-    const { data, isLoading, isError, error } = useQuery({ queryKey: ["details-post", id], queryFn: getPosts })
-
-    console.log({ data, isLoading, isError, error });
-
-    async function getPosts() {
-        const apiUrl = `${import.meta.env.VITE_BASE_URL}/posts/${id}`
-        return axios.get(apiUrl, {
-            headers: {
-                token: localStorage.getItem("token"),
-            },
-        })
-    }
+    const { userData } = useContext(AuthContext)
+    const { data, isLoading, isError, error } = useFetch(["details-post", id], `posts/${id}`, userData)
 
     return (
         <section className='py-12'>
@@ -32,7 +22,7 @@ export default function PostDetails() {
                         <p className="text-red-500 text-center">{error}</p>
                     )}
                     {data && <PostItem
-                        post={data.data.post}
+                        post={data.post}
                         showAllComments={true} />}
                 </div>
             </div>

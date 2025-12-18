@@ -1,16 +1,47 @@
-import { Card } from 'flowbite-react'
-import React from 'react'
+import React from "react";
+import { Link } from "react-router-dom";
+import HeaderPostAndComment from "./HeaderPostAndComment";
 
-import HeaderPostAndComment from './HeaderPostAndComment'
+export default function CommentItem({
+    comments = [],
+    showAllComments = false,
+    postId,
+}) {
+    if (comments.length === 0) return null;
 
-export default function CommentItem({ comment }) {
+    const lastComment = comments[comments.length - 1];
+
     return (
-        <Card>
-            {/* header */}
-            <HeaderPostAndComment user={{ ...comment.commentCreator, createdAt: comment.createdAt }} />
-            <h3 className='text-2xl font-bold tracking-tight text-gray-900 dark:text-white'>
-                {comment.content}
-            </h3>
-        </Card>
-    )
+        <>
+            {showAllComments ? (
+                comments.map((comment) => (
+                    <HeaderPostAndComment
+                        key={comment._id}
+                        user={comment.commentCreator}
+                        createdAt={comment.createdAt}
+                        body={comment.content}
+                        isComment={true}
+                    />
+                ))
+            ) : (
+                <>
+                    <HeaderPostAndComment
+                        user={lastComment.commentCreator}
+                        createdAt={lastComment.createdAt}
+                        body={lastComment.content}
+                        isComment={true}
+                    />
+
+                    {comments.length > 1 && (
+                        <Link
+                            to={`/posts/${postId}`}
+                            className="text-blue-500 text-sm ps-16 hover:underline"
+                        >
+                            Show more comments
+                        </Link>
+                    )}
+                </>
+            )}
+        </>
+    );
 }
