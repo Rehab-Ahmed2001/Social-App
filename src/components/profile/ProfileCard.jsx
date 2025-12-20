@@ -86,11 +86,13 @@ export default function ProfileCard() {
                     </span>
                     <div className="mt-4 flex space-x-3 lg:mt-6">
 
-                        <Link to={"/change-password"}
-                            className="inline-flex items-center rounded-lg bg-cyan-700 px-4 py-2 text-center text-sm font-medium text-white hover:bg-cyan-800 focus:outline-none focus:ring-4 focus:ring-cyan-300 dark:bg-cyan-600 dark:hover:bg-cyan-700 dark:focus:ring-cyan-800"
-                        >
-                            Change Password
-                        </Link>
+                        <AppButton>
+                            <Link to={"/change-password"}
+                                className="inline-flex items-center rounded-lg px-4 py-2 text-center text-sm font-medium text-white  focus:outline-none focus:ring-4 "
+                            >
+                                Change Password
+                            </Link>
+                        </AppButton>
 
                     </div>
                 </div>}
