@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import axios from "axios";
 import { Radio, Label, TextInput, Alert, Datepicker } from "flowbite-react";
 import { Controller, useForm } from 'react-hook-form';
@@ -43,7 +43,9 @@ const schema = z.object({
   path: ["rePassword"],
 });
 export default function Register() {
-
+  useEffect(() => {
+    document.title = "Kudo | Register"
+  }, [])
   const navigate = useNavigate()
   const [apiError, setApiError] = useState(null)
 

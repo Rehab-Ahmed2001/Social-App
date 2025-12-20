@@ -2,16 +2,20 @@ import { createBrowserRouter } from "react-router-dom";
 import Layout from "../components/Layout/Layout";
 import Login from "../pages/auth/Login/Login";
 import Register from "../pages/auth/Register/Register";
-import Posts from "../pages/Posts/Posts";
+// import Posts from "../pages/Posts/Posts";
 import NotFound from "../pages/NotFound/NotFound";
-import Profile from "../pages/auth/Profile/Profile";
-import Friends from "../pages/Friends/Friends";
-import Chats from "../pages/Chats/Chats";
+// import Profile from "../pages/auth/Profile/Profile";
+// import Friends from "../pages/Friends/Friends";
+// import Chats from "../pages/Chats/Chats";
 import ProtectedRoutes from "./ProtectedRoutes";
 import ProtectedAuthRoutes from "./ProtectedAuthRoutes";
 import PostDetails from "../pages/PostDetails/PostDetails";
+import { lazy, Suspense } from "react";
 
-
+const Posts = lazy(() => import("../pages/Posts/Posts"))
+const Profile = lazy(() => import("../pages/auth/Profile/Profile"))
+const Friends = lazy(() => import("../pages/Friends/Friends"))
+const Chats = lazy(() => import("../pages/Chats/Chats"))
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -19,7 +23,10 @@ export const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <ProtectedRoutes><Posts /></ProtectedRoutes>
+        element: <ProtectedRoutes>
+          <Suspense>
+            <Posts />
+          </Suspense></ProtectedRoutes>
       },
       {
         path: "/posts/:id",
@@ -35,15 +42,30 @@ export const router = createBrowserRouter([
       },
       {
         path: "/profile",
-        element: <ProtectedRoutes><Profile /></ProtectedRoutes>
+        element:
+          <ProtectedRoutes>
+            <Suspense>
+              <Profile />
+            </Suspense>
+          </ProtectedRoutes>
       },
       {
         path: "/friends",
-        element: <ProtectedRoutes><Friends /></ProtectedRoutes>
+        element:
+          <ProtectedRoutes>
+            <Suspense>
+              <Friends />
+            </Suspense>
+          </ProtectedRoutes>
       },
       {
         path: "/chats",
-        element: <ProtectedRoutes><Chats /></ProtectedRoutes>
+        element:
+          <ProtectedRoutes>
+            <Suspense>
+              <Chats />
+            </Suspense>
+          </ProtectedRoutes>
       },
       {
         path: "*",

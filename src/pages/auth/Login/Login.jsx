@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import axios from "axios";
 import { Alert, Button, Label, TextInput } from "flowbite-react";
 import { useForm } from 'react-hook-form';
@@ -20,6 +20,9 @@ const schema = z.object({
       { message: "Password must be at least 8 characters and include uppercase, lowercase, number, and special character" }),
 })
 export default function Login() {
+  useEffect(() => {
+    document.title = "Kudo | Login"
+  }, [])
 
   const navigate = useNavigate()
   const [apiError, setApiError] = useState(null)

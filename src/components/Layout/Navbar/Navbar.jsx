@@ -71,7 +71,6 @@ export default function AppNavbar() {
             <NavbarLink as={NavLink} to="/" active>
               Home
             </NavbarLink>
-            <NavbarLink as={NavLink} to="/">Posts</NavbarLink>
             <NavbarLink as={NavLink} to="/friends">Friends</NavbarLink>
             <NavbarLink as={NavLink} to="/chats">Chats</NavbarLink>
           </NavbarCollapse>

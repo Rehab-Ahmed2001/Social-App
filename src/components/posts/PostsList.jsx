@@ -12,7 +12,7 @@ export default function PostsList({ isHome = true }) {
         : `users/${userData._id}/posts`
     const { data, isLoading, isError, error } = useFetch(queryKey, apiUrl, userData)
     return (
-        <section className='py-12'>
+        <section className='py-4'>
             <div className='max-w-3xl mx-auto'>
                 <div className='flex flex-col gap-6'>
 
