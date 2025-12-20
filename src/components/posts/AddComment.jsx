@@ -30,9 +30,8 @@ export default function AddComment({ post }) {
                 theme: "dark",
 
             })
-            queryClient.invalidateQueries({
-                queryKey: ["details-post", post._id],
-            });
+            queryClient.invalidateQueries(["all-posts"]);
+            queryClient.invalidateQueries(["profile-posts"]);
         },
         onError: (error) => {
             console.log(error);

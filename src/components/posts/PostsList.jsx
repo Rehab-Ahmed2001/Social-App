@@ -27,9 +27,12 @@ export default function PostsList({ isHome = true }) {
                         <p className="text-red-500 text-center">{error}</p>
                     )}
 
-                    {data && data.posts.map(post => (
-                        <PostItem key={post._id} post={post} />
-                    ))}
+                    {data &&
+                        [...data.posts]
+                            .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+                            .map(post => (
+                                <PostItem key={post._id} post={post} />
+                            ))}
 
                 </div>
             </div>
