@@ -8,7 +8,7 @@ export default function PostsList({ isHome = true }) {
     const { userData } = useContext(AuthContext)
     const queryKey = isHome ? ['all-posts'] : ["profile-posts"]
     const apiUrl = isHome ?
-        `posts?limit=20&sort=-createdAt`
+        `posts?sort=-createdAt`
         : `users/${userData._id}/posts`
     const { data, isLoading, isError, error } = useFetch(queryKey, apiUrl, userData)
     return (

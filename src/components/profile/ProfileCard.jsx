@@ -4,17 +4,25 @@ import { AuthContext } from '../../Context/AuthContext';
 import { Link } from 'react-router-dom';
 import { MdEdit } from "react-icons/md";
 import { useForm } from 'react-hook-form';
-import { useMutation} from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import AppButton from '../shared/AppButton/AppButton';
+import { profileImageSchema } from '../../schema/profileImage.schema';
+import { zodResolver } from "@hookform/resolvers/zod";
 
 
 export default function ProfileCard() {
 
+
     const { userData, getProfileData } = useContext(AuthContext)
     const [openModal, setOpenModal] = useState(false);
-    const { handleSubmit, register } = useForm()
+    const { handleSubmit, register, formState: { errors } } = useForm(
+        {
+            resolver: zodResolver(profileImageSchema),
+            mode: "onChange"
+        }
+    )
     const { mutate: handleChangeProfilePhoto, isPending } = useMutation({
         mutationFn: changeProfilePhoto,
         onSuccess: () => {
@@ -90,7 +98,7 @@ export default function ProfileCard() {
             <Modal show={openModal} size="md" onClose={() => setOpenModal(false)} popup>
                 <ModalHeader />
                 <ModalBody>
-
+                    {errors.photo && <p className='text-red-500'>{errors.photo.message}</p>}
                     <form
                         onSubmit={handleSubmit(handleChangeProfilePhoto)}
                         className="flex flex-col gap-4 w-full items-center justify-center">
