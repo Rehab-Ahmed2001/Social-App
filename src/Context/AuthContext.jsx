@@ -1,7 +1,7 @@
 import axios from "axios";
 import { createContext, useEffect, useState } from "react";
 
-export const AuthContext= createContext(null);
+export const AuthContext = createContext(null);
 
 export default function AuthContextProvider({ children }) {
     const [token, setToken] = useState(null);
@@ -45,9 +45,10 @@ export default function AuthContextProvider({ children }) {
 
     return (
         <AuthContext.Provider
-            value={{ token, setToken, userData, loading }}
+            value={{ token, setToken, userData, loading, getProfileData }}
         >
             {children}
         </AuthContext.Provider>
     );
+
 }
