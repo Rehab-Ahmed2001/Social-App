@@ -1,13 +1,17 @@
-import React, { useContext } from 'react';
-import { Navigate } from 'react-router-dom';
-import { AuthContext } from '../Context/AuthContext';
+import { Navigate } from "react-router-dom";
+import { useContext } from "react";
+import { AuthContext } from "../Context/AuthContext";
 
 export default function ProtectedRoutes({ children }) {
-    const { token } = useContext(AuthContext);
+    const { token, loading } = useContext(AuthContext);
 
-    if (!token) {
-        return <Navigate to="/login" replace />; // replace عشان ما تعملش history loop
+    if (loading) {
+        return <div>Loading...</div>;
     }
 
-    return <>{children}</>;
+    if (!token) {
+        return <Navigate to="/login" replace />;
+    }
+
+    return children;
 }

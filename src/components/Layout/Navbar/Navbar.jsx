@@ -68,11 +68,11 @@ export default function AppNavbar() {
       {
         token && (
           <NavbarCollapse>
-            <NavbarLink as={NavLink} to="/" active>
+            <NavbarLink as={NavLink} to="/" >
               Home
             </NavbarLink>
+            <NavbarLink as={NavLink} to="/profile">Profile</NavbarLink>
             <NavbarLink as={NavLink} to="/friends">Friends</NavbarLink>
-            <NavbarLink as={NavLink} to="/chats">Chats</NavbarLink>
           </NavbarCollapse>
         )
       }

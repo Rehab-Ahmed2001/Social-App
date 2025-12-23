@@ -6,16 +6,15 @@ import Register from "../pages/auth/Register/Register";
 import NotFound from "../pages/NotFound/NotFound";
 // import Profile from "../pages/auth/Profile/Profile";
 // import Friends from "../pages/Friends/Friends";
-// import Chats from "../pages/Chats/Chats";
 import ProtectedRoutes from "./ProtectedRoutes";
 import ProtectedAuthRoutes from "./ProtectedAuthRoutes";
 import PostDetails from "../pages/PostDetails/PostDetails";
 import { lazy, Suspense } from "react";
-
 const Posts = lazy(() => import("../pages/Posts/Posts"))
 const Profile = lazy(() => import("../pages/auth/Profile/Profile"))
 const Friends = lazy(() => import("../pages/Friends/Friends"))
-const Chats = lazy(() => import("../pages/Chats/Chats"))
+const FriendProfile = lazy(() => import("../pages/FriendProfile/FriendProfile"));
+
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -59,13 +58,14 @@ export const router = createBrowserRouter([
           </ProtectedRoutes>
       },
       {
-        path: "/chats",
-        element:
+        path: "/friends/:id",
+        element: (
           <ProtectedRoutes>
             <Suspense>
-              <Chats />
+              <FriendProfile />
             </Suspense>
           </ProtectedRoutes>
+        )
       },
       {
         path: "*",
