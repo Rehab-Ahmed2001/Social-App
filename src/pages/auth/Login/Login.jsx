@@ -6,10 +6,11 @@ import { Link, useNavigate } from "react-router-dom"
 import { zodResolver } from '@hookform/resolvers/zod';
 import ValidationError from '../../../components/shared/ValidationError/ValidationError';
 import AppButton from '../../../components/shared/AppButton/AppButton';
-import { HiInformationCircle } from 'react-icons/hi';
 import { AuthContext } from '../../../Context/AuthContext';
 import { loginSchema } from '../../../schema/login.schema';
 import { saveCredentials, getCredentials, clearCredentials } from '../../../utils/credentials';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const defaultValues = {
   email: "",
@@ -19,14 +20,13 @@ const defaultValues = {
 
 export default function Login() {
   const navigate = useNavigate()
-  const [apiError, setApiError] = useState(null)
+  const [ setApiError] = useState(null)
   const { setToken } = useContext(AuthContext)
 
   const { register, handleSubmit, setValue, formState: { errors, isSubmitting, isValid } } = useForm({
     defaultValues,
     resolver: zodResolver(loginSchema)
   });
-
 
   useEffect(() => {
     document.title = "Kudo | Login";
@@ -39,7 +39,6 @@ export default function Login() {
     }
   }, []);
 
-  // دالة تسجيل الدخول
   async function onSubmit(data) {
     try {
       const { data: response } = await axios.post(`${import.meta.env.VITE_BASE_URL}/users/signin`, {
@@ -52,20 +51,35 @@ export default function Login() {
         localStorage.setItem("token", response.token);
         setToken(response.token);
 
-        // حفظ أو مسح الإيميل والباسورد حسب Remember me
         if (data.remember) {
           saveCredentials(data.email, data.password);
         } else {
           clearCredentials();
         }
 
+        toast.success("Logged in successfully!", {
+          position: "top-center",
+          autoClose: 2000,
+          theme: "dark"
+        });
+
         navigate("/");
+
       } else if (response.error) {
         throw new Error(response.error);
       }
+
     } catch (error) {
       console.log(error);
-      setApiError(error.response?.data?.error || "Something went wrong");
+      const message = error.response?.data?.error || "Something went wrong";
+
+      setApiError(message);
+
+      toast.error(message, {
+        position: "top-center",
+        autoClose: 3000,
+        theme: "dark"
+      });
     }
   }
 
@@ -75,19 +89,12 @@ export default function Login() {
         <div className='max-w-lg mx-auto p-8 shadow-lg dark:bg-gray-800 rounded'>
           <h1 className='text-center text-xl font-semibold mb-4'>Login</h1>
 
-          {/* API Error */}
-          {apiError && (
-            <Alert className='my-4' color="failure" icon={HiInformationCircle}>
-              {apiError}
-            </Alert>
-          )}
-
           <form onSubmit={handleSubmit(onSubmit)} className="flex max-w-md flex-col gap-4">
 
             {/* Email */}
             <div>
               <Label htmlFor="email" className="mb-1 block">Your email</Label>
-              <TextInput id="email" type="email" placeholder="rehab@gmail.com" {...register("email")} />
+              <TextInput id="email" type="email" placeholder="yourname@gmail.com" {...register("email")} />
               <ValidationError error={errors.email?.message} />
             </div>
 
