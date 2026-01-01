@@ -8,6 +8,8 @@ import ValidationError from '../../../components/shared/ValidationError/Validati
 import AppButton from '../../../components/shared/AppButton/AppButton';
 import { HiInformationCircle } from "react-icons/hi";
 import { registerSchema } from '../../../schema/register.schema';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const defaultValues = {
   name: "",
@@ -19,33 +21,46 @@ const defaultValues = {
 }
 
 export default function Register() {
-  useEffect(() => {
-    document.title = "Kudo | Register"
-  }, [])
   const navigate = useNavigate()
   const [apiError, setApiError] = useState(null)
-
 
   const { register, handleSubmit, formState: { errors, isSubmitting, isValid }, control } = useForm({
     defaultValues,
     resolver: zodResolver(registerSchema)
   });
 
-  async function onSubmit(data) {
-    console.log(data)
+  useEffect(() => {
+    document.title = "Kudo | Register"
+  }, [])
 
+  async function onSubmit(data) {
     try {
       const { data: response } = await axios.post(`${import.meta.env.VITE_BASE_URL}/users/signup`, data)
       if (response.message === "success") {
-        navigate("/login");
         setApiError(null)
-      }
-      else if (response.error) {
+
+      
+        toast.success("Account created successfully!", {
+          position: "top-center",
+          autoClose: 2000,
+          theme: "dark"
+        });
+
+        navigate("/login");
+
+      } else if (response.error) {
         throw new Error(response.error)
       }
     } catch (error) {
-      console.log(error);
-      setApiError(error.response.data.error)
+      const message = error.response?.data?.error || "Something went wrong"
+      setApiError(message)
+
+      
+      toast.error(message, {
+        position: "top-center",
+        autoClose: 3000,
+        theme: "dark"
+      });
     }
   }
 
@@ -115,8 +130,6 @@ export default function Register() {
                     }} />}
                 name="dateOfBirth"
                 control={control} />
-
-              {/* <TextInput id="dateOfBirth" type="date" {...register("dateOfBirth")} /> */}
               <ValidationError error={errors.dateOfBirth?.message} />
             </div>
 
@@ -144,6 +157,7 @@ export default function Register() {
             >
               Register
             </AppButton>
+
             {/* Link to Login */}
             <p className="mt-4 text-center text-sm text-gray-600 dark:text-gray-400">
               Already have an account?{' '}
@@ -156,6 +170,5 @@ export default function Register() {
         </div>
       </div>
     </section>
-
   )
 }
