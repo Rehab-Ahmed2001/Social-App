@@ -102,14 +102,14 @@ export default function Login() {
             {/* Email */}
             <div>
               <Label htmlFor="email" className="mb-1 block">Your email</Label>
-              <TextInput id="email" type="email" placeholder="yourname@gmail.com" {...register("email")} />
+              <TextInput id="email" type="email"  {...register("email")} />
               <ValidationError error={errors.email?.message} />
             </div>
 
             {/* Password */}
             <div>
               <Label htmlFor="password" className="mb-1 block">Your Password</Label>
-              <TextInput id="password" type="password" placeholder="*******" {...register("password")} />
+              <TextInput id="password" type="password"  {...register("password")} />
               <ValidationError error={errors.password?.message} />
             </div>
 
