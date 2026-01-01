@@ -3,22 +3,17 @@ import axios from "axios";
 import { Alert, Button, Label, TextInput } from "flowbite-react";
 import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from "react-router-dom"
-import * as z from "zod"
 import { zodResolver } from '@hookform/resolvers/zod';
 import ValidationError from '../../../components/shared/ValidationError/ValidationError';
 import AppButton from '../../../components/shared/AppButton/AppButton';
 import { HiInformationCircle } from 'react-icons/hi';
 import { AuthContext } from '../../../Context/AuthContext';
+import { loginSchema } from '../../../schema/login.schema';
 const defaultValues = {
   email: "",
   password: "",
 }
-const schema = z.object({
-  email: z.email({ message: "Invalid email format" }),
-  password: z.string()
-    .regex(/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[#?!@$%^&*-]).{8,}$/,
-      { message: "Password must be at least 8 characters and include uppercase, lowercase, number, and special character" }),
-})
+
 export default function Login() {
   useEffect(() => {
     document.title = "Kudo | Login"
@@ -26,7 +21,10 @@ export default function Login() {
 
   const navigate = useNavigate()
   const [apiError, setApiError] = useState(null)
-  const { register, handleSubmit, formState: { errors, isSubmitting, isValid } } = useForm({ defaultValues, resolver: zodResolver(schema) });
+  const { register, handleSubmit, formState: { errors, isSubmitting, isValid } } = useForm({
+    defaultValues,
+    resolver: zodResolver(loginSchema)
+  });
 
   const { setToken } = useContext(AuthContext)
   async function onSubmit(data) {

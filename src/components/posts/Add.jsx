@@ -4,16 +4,11 @@ import { useForm } from "react-hook-form"
 import { IoMdCloudUpload } from "react-icons/io";
 import axios from 'axios';
 import AppButton from '../shared/AppButton/AppButton';
-import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from 'react-toastify';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-const schema = z.object({
-    body: z
-        .string()
-        .min(1, "Post content is required")
-        .max(500, "Max length is 500 characters"),
-});
+import { postAddSchema } from '../../schema/postAdd.schema';
+
 
 export default function Add() {
     const fileInputRef = useRef()
@@ -43,9 +38,10 @@ export default function Add() {
     })
 
     const { register, handleSubmit, reset, formState: { errors, isSubmitting, isValid } } = useForm({
-        resolver: zodResolver(schema),
+        resolver: zodResolver(postAddSchema),
         mode: "onChange"
-    })
+    });
+
     async function addPost(data) {
         console.log(data.body, fileInputRef.current.files[0]);
         const formData = new FormData()

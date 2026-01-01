@@ -4,10 +4,10 @@ import { Radio, Label, TextInput, Alert, Datepicker } from "flowbite-react";
 import { Controller, useForm } from 'react-hook-form';
 import { Link, useNavigate } from "react-router-dom"
 import { zodResolver } from "@hookform/resolvers/zod"
-import * as z from "zod"
 import ValidationError from '../../../components/shared/ValidationError/ValidationError';
 import AppButton from '../../../components/shared/AppButton/AppButton';
 import { HiInformationCircle } from "react-icons/hi";
+import { registerSchema } from '../../../schema/register.schema';
 
 const defaultValues = {
   name: "",
@@ -18,30 +18,6 @@ const defaultValues = {
   gender: "",
 }
 
-const schema = z.object({
-  name: z.string({ message: "Name is required" }).min(3, { message: "Name must be at least 3 characters" }),
-  email: z.email({ message: "Invalid email format" }),
-  password: z.string()
-    .regex(/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[#?!@$%^&*-]).{8,}$/, { message: "Password must be at least 8 characters and include uppercase, lowercase, number, and special character" }),
-
-  rePassword: z.string()
-    .regex(/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[#?!@$%^&*-]).{8,}$/, { message: "Password must be at least 8 characters and include uppercase, lowercase, number, and special character" }),
-  dateOfBirth: z.string()
-    .refine(val => {
-      const d = new Date(val);
-      if (isNaN(d.getTime())) return false;
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-      d.setHours(0, 0, 0, 0);
-      return d <= today;
-    }, { message: "Invalid date of birth" })
-  ,
-  gender: z
-    .enum(["male", "female"], { message: "Please select a gender" })
-}).refine((data) => data.password === data.rePassword, {
-  message: "Passwords do not match",
-  path: ["rePassword"],
-});
 export default function Register() {
   useEffect(() => {
     document.title = "Kudo | Register"
@@ -50,8 +26,10 @@ export default function Register() {
   const [apiError, setApiError] = useState(null)
 
 
-
-  const { register, handleSubmit, formState: { errors, isSubmitting, isValid }, control } = useForm({ defaultValues, resolver: zodResolver(schema) });
+  const { register, handleSubmit, formState: { errors, isSubmitting, isValid }, control } = useForm({
+    defaultValues,
+    resolver: zodResolver(registerSchema)
+  });
 
   async function onSubmit(data) {
     console.log(data)

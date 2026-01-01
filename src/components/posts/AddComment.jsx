@@ -2,22 +2,18 @@ import { Textarea } from 'flowbite-react'
 import React from 'react'
 import AppButton from '../shared/AppButton/AppButton'
 import { useForm } from 'react-hook-form'
-import z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'react-toastify';
 import axios from 'axios';
-const schema = z.object({
-    content: z
-        .string()
-        .min(1, "Comment is required")
-        .max(500, "Comment must be less than 500 characters"),
-});
+import { commentAddSchema } from '../../schema/commentAdd.schema';
+
 export default function AddComment({ post }) {
 
     const { register, handleSubmit, reset, formState: { isSubmitting, isValid } } = useForm({
-        resolver: zodResolver(schema), mode: "onChange"
-    })
+        resolver: zodResolver(commentAddSchema),
+        mode: "onChange"
+    });
     const queryClient = useQueryClient()
     const { mutate } = useMutation({
         mutationFn: addComment,
