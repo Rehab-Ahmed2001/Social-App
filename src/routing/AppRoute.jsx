@@ -12,7 +12,7 @@ const Posts = lazy(() => import("../pages/Posts/Posts"));
 const Profile = lazy(() => import("../pages/auth/Profile/Profile"));
 const Friends = lazy(() => import("../pages/Friends/Friends"));
 const FriendProfile = lazy(() => import("../pages/FriendProfile/FriendProfile"));
-const ChangePassword = lazy(() => import("../pages/auth/ChangePassword/changePassword"));
+const ChangePassword = lazy(() => import("../pages/auth/ChangePassword/ChangePassword"));
 
 export const router = createBrowserRouter([
   {
